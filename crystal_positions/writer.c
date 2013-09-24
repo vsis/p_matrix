@@ -3,7 +3,7 @@
 
 #include "vector.h"
 #include "writer.h"
-
+#include "debug.h"
 
 //******************************************************************************
 int start_logger (char *logger_path, FILE **log_file){
@@ -19,15 +19,17 @@ int start_logger (char *logger_path, FILE **log_file){
 
 //******************************************************************************
 void log_crystal(int ring_num, int block_num, int crystal_num, vector *crystal_position, FILE *log_file){
-	/***/ if (crystal_position == NULL){printf("loggeando vector nulo!!\n");}
-	fprintf(log_file, 
-		"%i\t\t%i\t\t%i\t\t%.4f %.4f %.4f\n",
-		ring_num, 
-		block_num,
-		crystal_num,
-		crystal_position->x,
-		crystal_position->y,
-		crystal_position->z);
-	//***/printf ("logged\n");
+	if (crystal_position != NULL){
+		fprintf(log_file, 
+			"%i\t\t%i\t\t%i\t\t%.4f %.4f %.4f\n",
+			ring_num, 
+			block_num,
+			crystal_num,
+			crystal_position->x,
+			crystal_position->y,
+			crystal_position->z);
+	} else {
+		error_msg("Se intentó escribir un vector nulo sobre el archivo de salida");
+	}
 }
 

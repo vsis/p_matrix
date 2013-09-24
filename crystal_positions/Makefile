@@ -1,6 +1,6 @@
 CXX=gcc
 CFLAGS=-Wall -W -O2 -lm
-OBJ=vector.o writer.o calc.o
+OBJ=vector.o writer.o calc.o debug.o
 APP=crystal_positions
 
 all: $(OBJ) main.o

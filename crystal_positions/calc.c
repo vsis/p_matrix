@@ -4,6 +4,7 @@
 
 #include "vector.h"
 #include "calc.h"
+#include "debug.h"
 
 //******************************************************************************
 void init_variables(){
@@ -18,8 +19,6 @@ void init_variables(){
 	block_size_half = block_size / 2.00;
 	inter_block = 1.362;
 	initial_z_axis = -(inter_block + 19 * (inter_crystal + crystal_width) );
-	//***/printf ("valor z inicial: %f", initial_z_axis);
-	//***/printf("variables iniciadas\n");
 }
 
 
@@ -32,10 +31,9 @@ crystal * create_crystal(int _num, int _block, int _ring, vector *_position){
 		new_crystal->block = _block;
 		new_crystal->ring = _ring;
 		new_crystal->position = _position;
-		//***/printf ("cristal %i %i\n", _num, _block);
 		return new_crystal;
 	}
-	/***/printf("cristal nulo!!\n");
+	error_msg("create_crystal(): malloc ha retornado NULL");
 	return NULL;
 }
 
@@ -44,7 +42,6 @@ vector * calc_block(int block_num){
 	float x,y;
 	x = cos( block_num * angle_per_block ) * radius;
 	y = sin( block_num * angle_per_block ) * radius;
-	//***/ printf ("bloque en: %.4f , %.4f\n", x,y);
 	return new_vector (x, y, 0.00);
 }
  
@@ -69,7 +66,7 @@ crystal **calc_crystals (int block_num, int crystal_num, vector *block_pos){
 		//***/printf ("terminado el bloque %i\n", block_num);
 		return block_crystals;
 	}
-	/***/printf ("\narray de cristales nulo!!\n");
+	error_msg("calc_crystals(): malloc ha retornado NULL");
 	return NULL;
 }
 
@@ -80,7 +77,7 @@ crystal ** crystal_line (crystal *initial, int block_num, int crystal_num){
 	crystal *aux, **line;
 	if (initial == NULL)
 	{
-		/***/printf ("\nlínea de cristales nula!\n");
+		warning_msg("crystal_line(): se recibió el parámetro initial=NULL");
 		return NULL;
 	}
 	z_axis = initial_z_axis;
