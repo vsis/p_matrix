@@ -4,7 +4,6 @@
 
 #include "vector.h"
 #include "debug.h"
-#include "string.h"
 
 //******************************************************************************
 float module(vector *entrada){
