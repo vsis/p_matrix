@@ -52,3 +52,4 @@ int inside (vector *dot);
 //******************************************************************************
 //asigna el valor donde los planos de la imágen cortan los ejes cartesianos
 void set_planes();
+

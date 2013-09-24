@@ -13,6 +13,7 @@
 #include "list.h"
 #include "reader.h"
 #include "writer.h"
+#include "debug.h"
 
 
 #define LORS_PER_THREAD 512
@@ -152,6 +153,8 @@ int argsm (int argc, char *argv[]){
 int main (int argc, char *argv[]){
 	FILE *reader_file, *writer_file;
 	int error, begin, end, valid_lors;
+	char message[64];
+	set_msg_debug("stdout");
 	error = argsm(argc, argv);
 	if (error){
 		return -1;
@@ -160,27 +163,29 @@ int main (int argc, char *argv[]){
 	if (error == READER_SUCCESS){
 		error = start_logger(output, &writer_file);
 		if (error == WRITER_SUCCESS){
-			begin = time(NULL);
-			omp_set_num_threads(number_of_threads);
-			set_planes();
-			set_LP();
-			printf("Leyendo las posiciones de los cristales...\n");
-			adder(reader_file);
-			printf("Calculando los LORs con %i hilos de ejecución\n", number_of_threads);
-			comb_writer(writer_file, &valid_lors);
+			begin = time(NULL);	//medit el tiempo de inicio del cálculo
+			omp_set_num_threads(number_of_threads);	//setear el número de hilos
+			set_planes();	//se determina el tamaño de la imágen
+			set_LP();	//se determina el valor de la constante LP
+			info_msg ("Leyendo las posiciones de los cristales");
+			adder(reader_file);	//se agregan los cristales a la lista
+			sprintf (message, "Calculando los LORs con %i hilos de ejecución", number_of_threads); 
+			info_msg (message);
+			comb_writer(writer_file, &valid_lors);	//se hacen las combinaciones de cristales y se escriben los lors
 			end = time(NULL);
-			end = end - begin;
-			printf( "Cálculo terminado en %i:%i minutos.\n", end / 60, end % 60 );
-			printf( "LORS válidos calculados= %i\n",valid_lors);
+			end = end - begin;	//se determina el tiempo que tomó el cálculo
+			sprintf( message, "Cálculo terminado en %i:%i minutos", end / 60, end % 60 );
+			info_msg(message);
+			sprintf(message, "LORS válidos calculados= %i",valid_lors);
+			info_msg(message);			
 			fclose(writer_file);
 		}else{
-			printf("Error: no se pudo abrir el archivo de salida.\n");
+			error_msg("No se pudo abrir el archivo de salida");
 		}
 		fclose(reader_file);	
 	}else{
-		printf ("Error: no se pudo abrir el archivo de entrada.\n");
+		error_msg ("No se pudo abrir el archivo de entrada");
 	}
 	return 0;
 }
-
 

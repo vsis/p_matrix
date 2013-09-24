@@ -133,7 +133,6 @@ int get_intersection_line_image (crystal *a, crystal *b){
 	free ( inter[0] );
 	free ( inter[1] );
 	free ( direction );
-
 	return result;
 }
 
