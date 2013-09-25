@@ -29,8 +29,11 @@ void print_help(){
 	printf("Alumno: Roddy González\n");
 	printf("Software para calcular los LORs para el escáner PET SIEMENS BIOGRAPH\n");
 	printf("modo de uso:\n");
-	printf("lorcomb -h\t\t\t: imprime esta ayuda\n");
-	printf("lorcomb -i <archivo de entrada> -o <archivo de salida> -n <número de hilos>\t: lee las posiciones de cristales descritas en 'archivo de entrada', calcula los lors y los escribe en 'archivo de salida'.\n");
+	printf("-h\t\t\t:imprime esta ayuda\n");
+	printf("-i <archivo de entrada>\t:lee las posiciones de cristales descritas en 'archivo de entrada'\n");
+	printf("-o <archivo de salida>\t:escribe los lors encontrados en 'archivo de salida'\n");
+	printf("-n <número de hilos>\t:determina el número de hilos para calcular\n");
+	printf("-l <log>\t\t:determina un archivo donde escribir el log del programa (por defecto: stdout)\n");
 }
 
 //******************************************************************************
@@ -107,11 +110,11 @@ void comb_writer( FILE *writer, int *valid){
 //******************************************************************************
 //procesa los argumentos del programa
 int argsm (int argc, char *argv[]){
-	int help_flag = 0, error_flag = 0;
+	int help_flag = 0, error_flag = 0, log_output_flag = 0;
 	int c; 
-	char num_threads[10];
+	char num_threads[10], *log_output;
 	opterr = 0;
-	while ((c = getopt (argc, argv, "hi:o:n:")) != -1){
+	while ((c = getopt (argc, argv, "hi:o:n:l:")) != -1){
 		switch (c){
 			case 'h':
 				help_flag = 1;
@@ -125,6 +128,10 @@ int argsm (int argc, char *argv[]){
 			case 'n':
 				strcpy (num_threads, optarg);
 				number_of_threads = atoi (num_threads);
+				break;
+			case 'l':
+				log_output = optarg;
+				log_output_flag = 1;
 				break;
 			case '?':
 				if ( (optopt == 'c') || (optopt == 'i'))
@@ -146,6 +153,11 @@ int argsm (int argc, char *argv[]){
 	if ( (help_flag) || (error_flag) ){
 		print_help();
 	}
+	if (log_output_flag){
+		set_msg_debug(log_output);
+	} else {
+		set_msg_debug("stdout");
+	}
 	return error_flag;
 }
 
@@ -154,7 +166,7 @@ int main (int argc, char *argv[]){
 	FILE *reader_file, *writer_file;
 	int error, begin, end, valid_lors;
 	char message[64];
-	set_msg_debug("stdout");
+	
 	error = argsm(argc, argv);
 	if (error){
 		return -1;

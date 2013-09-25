@@ -3,6 +3,7 @@
 
 #include "vector.h"
 #include "crystal.h"
+#include "debug.h"
 
 //******************************************************************************
 crystal * new_crystal(int c, int b, int r, vector * pos){
@@ -14,7 +15,7 @@ crystal * new_crystal(int c, int b, int r, vector * pos){
 		result->ring = r;
 		result->position = pos;
 	} else {
-		printf ("Cristal vacío c=%i, b=%i, r=%i\n", c,b,r);
+		error_msg("new_crystal(): malloc retornó NULL");
 	}
 	return result;
 }

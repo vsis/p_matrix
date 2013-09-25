@@ -4,6 +4,7 @@
 #include "vector.h"
 #include "crystal.h"
 #include "calc.h"
+#include "debug.h"
 
 //******************************************************************************
 int LOR_index(int r1, int c1, int b1, int r2, int c2, int b2){
@@ -103,6 +104,9 @@ vector *get_intersection_line_plane (
 
 //******************************************************************************
 int get_intersection_line_image (crystal *a, crystal *b){
+	if ( (a == NULL) || (b == NULL) ){
+		error_msg("get_intersection_line_image(): se recibió uno o más cristales nulos");
+	}
 	vector *origin, *direction;
 	origin = a->position;
 	direction = diff(b->position, a->position);
@@ -122,7 +126,7 @@ int get_intersection_line_image (crystal *a, crystal *b){
 				free(inter[1]);
 				inter[1] = NULL;
 			}else if(index == 2){ //si hay dos puntos distintos se termina el cálculo.
-				break;
+				break;	// en este punto se podría calcular la intersección.
 			}
 		}else{
 			free( aux );
@@ -157,3 +161,4 @@ void set_planes(){
 	p_planes[4] = X_SIZE / 2;//planos X
 	p_planes[5] = - X_SIZE / 2;
 }
+
