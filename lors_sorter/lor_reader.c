@@ -2,6 +2,9 @@
 #include <stdlib.h>
 
 #include "lor_reader.h"
+#include "debug.h"
+
+char message[64];
 
 //******************************************************************************
 lor * new_lor(int lor_value, int r1, int c1, int r2, int c2){
@@ -16,7 +19,8 @@ lor * new_lor(int lor_value, int r1, int c1, int r2, int c2){
 	}else{
 		//si al sistema se le acaba la memoria al cargar los lors...
 		//... es probable que en esta función, malloc no asigne memoria y retorne NULL
-		printf ("DEBUG\tnew_lor(lor_value= %i, r1=%i, c1=%i, r2=%i, c2=%i) devolvió un valor NULL\n",lor_value, r1, c1, r2, c2);
+		sprintf (message,"new_lor(lor_value= %i, r1=%i, c1=%i, r2=%i, c2=%i): malloc retornó NULL",lor_value, r1, c1, r2, c2);
+		error_msg(message);
 	}
 	return result;
 }
@@ -32,7 +36,8 @@ int open_lor_reader(char * path){
 	number_of_packs++;	//El último pack va a tener menos LORs que NUMBER_OF_LORS_PER_PACK.
 	lor_packs = (lor ***) calloc (number_of_packs, sizeof(lor **));
 	if (lor_packs == NULL){
-		printf ("DEBUG\t open_lor_reader(path= %s): calloc devolvió NULL para lor_packs (number_of_packs = %i)", path, number_of_packs);
+		sprintf (message,"open_lor_reader(path= %s): calloc devolvió NULL para lor_packs (number_of_packs = %i)", path, number_of_packs);
+		error_msg(message);
 		return LOR_READER_ERROR;
 	}
 	error = get_all_lor_packs();	//se comienza a leer los packs de lors.
@@ -46,7 +51,8 @@ int get_next_lor_pack(){
 	int i, j, read_error = 0;
 	current_lor_pack = (lor **) calloc( NUMBER_OF_LORS_PER_PACK, sizeof(lor *) );
 	if (current_lor_pack == NULL){
-		printf ("DEBUG\t get_next_lor_pack(): calloc() devolvió NULL para current_lor_pack\n");
+		sprintf (message,"get_next_lor_pack(): calloc devolvió NULL para current_lor_pack");
+		error_msg(message);
 		return LOR_READER_ERROR;
 	}
 	for (i = 0; i < NUMBER_OF_LORS_PER_PACK; i++){	//para cada nuevo ítem de este pack
@@ -57,7 +63,8 @@ int get_next_lor_pack(){
 		read_error = read_error || (fread (&r2, sizeof(int), 1, lor_input_file) == 0);
 		read_error = read_error || (fread (&c2, sizeof(int), 1, lor_input_file) == 0);
 		if (read_error){
-			printf("DEBUG\tget_next_lor_pack(): fin inesperado del archivo de entrada. %i elementos leídos\n", i);
+			sprintf(message, "get_next_lor_pack(): fin inesperado del archivo de entrada. %i elementos leídos", i);
+			warning_msg(message);
 			for (j = i; j < NUMBER_OF_LORS_PER_PACK; j++){	//desde la posición i en adelante, se asigna NULL a todo el array current_lor_pack.
 				current_lor_pack[j] = NULL;
 			}
@@ -103,7 +110,8 @@ int get_all_lor_packs(){
 	for (i = 0; i < number_of_packs; i++){	//para cada posición de array de packs
 		error = get_next_lor_pack();	//leer el nuevo pack
 		if (error != LOR_READER_SUCCESS){
-			printf ("DEBUG\tget_all_packs(): error al leer el pack número %i\n", i);
+			sprintf (message,"get_all_packs(): error al leer el pack número %i", i);
+			error_msg(message);
 			return LOR_READER_ERROR;
 		}
 		lor_packs[i] = current_lor_pack;

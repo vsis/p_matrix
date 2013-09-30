@@ -3,19 +3,22 @@
 #include <unistd.h>
 
 #include "checker.h"
+#include "debug.h"
 
+char message[64];
 //******************************************************************************
 int open_checker(char *path){
 	int error;
 	sorted_lors_file = fopen(path, "r");
 	if (sorted_lors_file == NULL){
-		printf("DEBUG:\tError: no se pudo abrir el archivo de lors ordenados\n");
+		sprintf(message, "open_checker(): no se pudo abrir el archivo de lors ordenados");
+		error_msg(message);
 		return CHECKER_ERROR;
 	}
 	checker_current = -1;
 	checker_previous = -1;
 	error = check_all_lors();
-	close(sorted_lors_file);
+	fclose(sorted_lors_file);
 	return error;
 }
 
@@ -66,13 +69,15 @@ int check_all_lors(){
 			checker_previous = checker_current;
 			read_elements++;
 		}else if( error == CHECKER_EOF){
-			printf("DEBUG\tcheck_all_lors: fin del archivo\n");
+			info_msg("check_all_lors(): fin del archivo");
 		}else{
-			printf("ERROR: el elemento %i no está ordenado!\n", read_elements);
+			sprintf(message, "check_all_lors(): el elemento %i no está ordenado!", read_elements);
+			error_msg(message);
 			//return CHECKER_ERROR;
 		}
 	}
-	printf ("DEBUG:\t%i elementos leídos y ordenados\n", read_elements);
+	sprintf (message,"%i elementos leídos y ordenados\n", read_elements);
+	info_msg(message);
 	return CHECKER_SORTED;
 }
 

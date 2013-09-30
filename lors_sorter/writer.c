@@ -4,6 +4,7 @@
 
 #include "lor_reader.h"
 #include "writer.h"
+#include "debug.h"
 
 //******************************************************************************
 int get_minor(int *indexes){
@@ -36,7 +37,7 @@ int get_minor(int *indexes){
 int open_lor_writer(char *path){
 	writer_output = fopen(path, "w");
 	if (writer_output == NULL){
-		printf("DEBUG:\t open_lor_writer(path= %s) error al abrir el archivo de salida\n", path);
+		error_msg("open_lor_writer(): no se pudo abrir el archivo de salida");
 		return WRITER_ERROR;
 	}
 	return WRITER_SUCCESS;
@@ -63,7 +64,7 @@ int write_all_lors(){
 	int * indexes;
 	indexes = (int *) calloc (number_of_packs, sizeof(int));
 	if (indexes == NULL){
-		printf ("DEBUG:\t write_all_lors() calloc devolvió NULL para indexes\n");
+		error_msg("write_all_lors(): calloc retornó NULL para la variable 'indexes'");
 		return WRITER_ERROR;
 	}
 	//inicializar todos los índices en 0
@@ -78,7 +79,10 @@ int write_all_lors(){
 			free(current_lor);
 			indexes[minor_index]++;
 		}else{
-			printf ("DEBUG:\t write_all_lors(): get_minor(indexes) retornó -1 en la iteración nº %i\n",i);
+			//se notifica un mensaje de error
+			char message[64];
+			sprintf(message, "write_all_lors(): get_minor() retornó -1 en la iteración nº %i",i);
+			error_msg(message);
 		}
 	}
 	fclose(writer_output);

@@ -8,8 +8,9 @@
 #include "lor_reader.h"
 #include "writer.h"
 #include "checker.h"
+#include "debug.h"
 
-char input[64], output[64];		//direcciones de los archivos de entrada y salida.
+char input[64], output[64], output_log[64];		//direcciones de los archivos de entrada, salida y log de mensajes.
 
 //******************************************************************************
 //imprime el texto de ayuda.
@@ -19,15 +20,17 @@ void print_help(){
 	printf("Alumno: Roddy González\n");
 	printf("Software para ordenar los LORs de menor a mayor\n");
 	printf("modo de uso:\n");
-	printf("lorsorter -h\t\t\t: imprime esta ayuda\n");
-	printf("lorsorter -i <archivo de entrada> -o <archivo de salida>\t: lee los LORs descritos en 'archivo de entrada' y los escribe ordenados de menor a mayor en 'archivo de salida'.\n");
+	printf("-h:\t\timprime esta ayuda\n");
+	printf("-i <archivo de entrada>:\tlee los LORs descritos en 'archivo de entrada'.\n");
+	printf("-o <archivo de salida>:\tescribe los LORs ordenados de menor a mayor en 'archivo de salida'\n");
+	printf("-l <archivo de log>:\tescribe el log de mensajes y bugs en 'archivo de log'\n");
 }
 
 //******************************************************************************
 //procesa los argumentos del programa
 int argsm (int argc, char *argv[]){
 	int help_flag = 0, error_flag = 0, c;
-	int input_flag = 0, output_flag = 0;
+	int input_flag = 0, output_flag = 0, output_log_flag = 0;
 	while ((c = getopt (argc, argv, "hi:o:")) != -1){
 		switch (c){
 			case 'h':
@@ -41,6 +44,10 @@ int argsm (int argc, char *argv[]){
 				strcpy(output,optarg);
 				output_flag = 1;
 				break;
+			case 'l':
+				strcpy(output_log, optarg);
+				output_log_flag = 1;
+				break;
 			case '?':
 				if ( (optopt == 'i') || (optopt == 'o')){
 					fprintf (stderr, "La opción -%c necesita la ruta de un archivo como argumento.\n", optopt);
@@ -51,6 +58,12 @@ int argsm (int argc, char *argv[]){
 				error_flag = 1;
 				break;
 		}
+	}
+
+	if(output_log_flag){
+		set_msg_debug(output_log);
+	} else {
+		set_msg_debug("stdout");
 	}
 
 	if ( !( input_flag && output_flag ) ){
@@ -68,7 +81,7 @@ int argsm (int argc, char *argv[]){
 //procedimiento principal
 int main(int argc, char *argv[]){
 	int now, error;
-	char *sorted_path, *lor_path;
+	char *sorted_path, *lor_path, message[64];
 	//leer los argumentos con los que el programa fue llamado
 	error = argsm(argc, argv);
 	if (error){		//si los argumentos no eran correctos se termina el programa.
@@ -77,36 +90,40 @@ int main(int argc, char *argv[]){
 	sorted_path = output;
 	lor_path = input;
 	//leer los lors del archivo de lors desordenado.
-	printf ("cargando lors...\n");
+	info_msg("cargando lors");
 	now = time(NULL);
 	error = open_lor_reader(lor_path);
 	if (error == LOR_READER_ERROR){
-		printf ("Error al abrir el archivo de entrada\n");
+		error_msg("no se pudo abrir el archivo de entrada");
 		return -1;
 	}
 	now = time(NULL) - now;
-	printf ("completado en %i:%i\n", now / 60, now % 60);
+	sprintf (message,"completado en %i:%i", now / 60, now % 60);
+	info_msg(message);
 	//escribir los lors ordenados en el archivo de salida.
-	printf ("ordenando lors\n");
+	info_msg ("ordenando lors");
 	now = time (NULL);
 	error = open_lor_writer(sorted_path);
 	if (error != WRITER_SUCCESS){
-		printf ("Error al abrir el archivo de salida\n");
+		error_msg ("Error al abrir el archivo de salida");
 	}else{
-		printf ("iniciando escritura con %i lor_packs\n", number_of_packs);
+		sprintf (message,"iniciando escritura con %i lor_packs", number_of_packs);
+		info_msg(message);
 		write_all_lors();
 	}
 	now = time(NULL) - now;
-	printf("completado en %i:%i\n", now / 60, now % 60);
-	printf("comprobando el orden de los lors\n");
+	sprintf(message,"completado en %i:%i", now / 60, now % 60);
+	info_msg(message);
+	info_msg("comprobando el orden de los lors");
 	now = time(NULL);
 	error = open_checker(sorted_path);
 	if (error == CHECKER_ERROR){
-		printf("los lors no están ordenados\n");
+		error_msg("los LORs no están ordenados");
 	}else{
-		printf("el orden de los lors ha sido verificado con éxito\n");
+		info_msg("los LORs están correctamente ordenados");
 	}
 	now = time(NULL) - now;
-	printf("completado en %i:%i\n", now / 60, now % 60);
+	sprintf(message,"completado en %i:%i\n", now / 60, now % 60);
+	info_msg(message);
 	return EXIT_SUCCESS;
 }
