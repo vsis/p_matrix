@@ -46,9 +46,9 @@ int check_next_lor(){
 				set_previous_crys(r1, c1, r2, c2);
 				return CHECKER_SORTED;
 			}else{
-				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_current, r1, c1, r2, c2);
+				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i", checker_current, r1, c1, r2, c2);
 				info_msg(message);
-				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_previous, checker_previous_crys[0], checker_previous_crys[1], checker_previous_crys[2], checker_previous_crys[3] );
+				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i", checker_previous, checker_previous_crys[0], checker_previous_crys[1], checker_previous_crys[2], checker_previous_crys[3] );
 				info_msg(message);
 				set_previous_crys(r1, c1, r2, c2);
 				return CHECKER_ERROR;
@@ -78,7 +78,7 @@ int check_all_lors(){
 			//return CHECKER_ERROR;
 		}
 	}
-	sprintf (message,"%i elementos leídos y ordenados\n", read_elements);
+	sprintf (message,"%i elementos leídos y ordenados", read_elements);
 	info_msg(message);
 	return CHECKER_SORTED;
 }

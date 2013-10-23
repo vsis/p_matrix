@@ -123,7 +123,7 @@ int main(int argc, char *argv[]){
 		info_msg("los LORs están correctamente ordenados");
 	}
 	now = time(NULL) - now;
-	sprintf(message,"completado en %i:%i\n", now / 60, now % 60);
+	sprintf(message,"completado en %i:%i", now / 60, now % 60);
 	info_msg(message);
 	return EXIT_SUCCESS;
 }
