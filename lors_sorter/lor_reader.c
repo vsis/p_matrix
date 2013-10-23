@@ -63,7 +63,7 @@ int get_next_lor_pack(){
 		read_error = read_error || (fread (&r2, sizeof(int), 1, lor_input_file) == 0);
 		read_error = read_error || (fread (&c2, sizeof(int), 1, lor_input_file) == 0);
 		if (read_error){
-			sprintf(message, "get_next_lor_pack(): fin inesperado del archivo de entrada. %i elementos leídos", i);
+			sprintf(message, "get_next_lor_pack(): fin del archivo de entrada. %i elementos leídos", i);
 			warning_msg(message);
 			for (j = i; j < NUMBER_OF_LORS_PER_PACK; j++){	//desde la posición i en adelante, se asigna NULL a todo el array current_lor_pack.
 				current_lor_pack[j] = NULL;

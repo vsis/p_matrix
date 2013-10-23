@@ -4,3 +4,9 @@
 *.txt
 *.bin
 .commit-msg
+
+#ejecutables
+crystal_positions/crystal_positions
+lors_getter/lors_getter
+lors_sorter/lors_sorter
+

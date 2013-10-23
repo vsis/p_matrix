@@ -46,8 +46,10 @@ int check_next_lor(){
 				set_previous_crys(r1, c1, r2, c2);
 				return CHECKER_SORTED;
 			}else{
-				printf("lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_current, r1, c1, r2, c2);
-				printf("lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_previous, checker_previous_crys[0], checker_previous_crys[1], checker_previous_crys[2], checker_previous_crys[3] );
+				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_current, r1, c1, r2, c2);
+				info_msg(message);
+				sprintf(message, "lor=%i\tr1= %i c1= %i\tr2= %i c2= %i\n", checker_previous, checker_previous_crys[0], checker_previous_crys[1], checker_previous_crys[2], checker_previous_crys[3] );
+				info_msg(message);
 				set_previous_crys(r1, c1, r2, c2);
 				return CHECKER_ERROR;
 			}
