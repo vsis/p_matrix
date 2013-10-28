@@ -2,6 +2,9 @@
 #include <stdlib.h>
 
 #include "crystal_reader.h"
+#include "debug.h"
+
+char message[64];
 
 //******************************************************************************
 int open_crystal_reader(char * path){	//carga los cristales del archivo path en memoria
@@ -30,7 +33,8 @@ int get_crystal_elements(){
 	for (current_element = 0; current_element < NUMBER_OF_ELEMENTS; current_element++){ 	//para cada uno de los elementos
 												//se lee un cristal y se asigna a la posición 'index' de los arrays de ubicación
 		if ( feof(crystal_input_file) ){
-			printf("DEBUG\tcrystal_get_elements(): fin inesperado del archivo. elementos leídos %i\n", current_element);
+			sprintf(message, "crystal_get_elements(): fin inesperado del archivo. elementos leídos %i", current_element);
+			error_msg(message);
 			return CRYSTAL_READER_ERROR;
 		}
 		fscanf (crystal_input_file, "%i\t\t%i\t\t%i\t\t%f %f %f\n",&ring, &block, &crystal, &x0, &y0, &z0);
@@ -49,7 +53,8 @@ int get_crystal_index(int ring, int crystal){
 	index += ring;				//... pero para números de cristal iguales, se ordenan por número de anillo.
 	if (index >= NUMBER_OF_ELEMENTS){
 		//vamos a tener un error del tipo "out of array index"
-		printf("DEBUG\tget_index(ring= %i, crystal= %i): se calculó un índice mayor que el permitido\n", ring, crystal);
+		sprintf(message, "get_index(ring= %i, crystal= %i): se calculó un índice mayor que el permitido", ring, crystal);
+		error_msg(message);
 	}
 	return index;
 }

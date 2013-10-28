@@ -7,19 +7,20 @@
 #include "lor_reader.h"
 #include "deployer.h"
 #include "cl_reader.h"
+#include "debug.h"
 
 int main(){
 	int now, error;
 	char *crystal_path, *lor_path, *device_info;
 	crystal_path = "crystals.txt";
 	lor_path = "salida.bin";
-	
+	set_msg_debug("stdout");
 	set_device();
 	device_info = platform_and_device_info();
 	printf ("%s", device_info);
 	error = deploy_script ("calc.cl");
 	if (error < CL_SUCCESS){
-		printf ("no se cargó el kernel\n");
+		error_msg ("no se cargó el kernel");
 	}
 	return EXIT_SUCCESS;
 	/*
