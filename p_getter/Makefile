@@ -1,6 +1,6 @@
 CXX=gcc
 CFLAGS=-Wall -W -O2 -lm -lOpenCL
-OBJ=crystal_reader.o lor_reader.o deployer.o cl_reader.o debug.o
+OBJ=vector.o crystal_reader.o lor_reader.o deployer.o cl_reader.o debug.o cpu_calc.o 
 APP=p_getter
 
 all: $(OBJ) main.o

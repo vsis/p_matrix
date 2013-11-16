@@ -6,7 +6,7 @@
 #define NUMBER_OF_VALID_LORS 108985597	//número estimado de LORS válidos
 #define LOR_READER_ERROR 1
 #define LOR_READER_SUCCESS 0
-#define NUMBER_OF_LORS_PER_PACK 102400
+#define NUMBER_OF_LORS_PER_PACK 1024
 
 typedef struct LOR_UNIT{
 	int lor_value;
