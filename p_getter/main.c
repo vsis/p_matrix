@@ -50,36 +50,39 @@ int main(){
 	info_msg(message);
 	//calcular pequeña imagen
 	info_msg("calulando imagen pequeña de prueba");
-	vector * voxel0, * delta, *index = NULL;
-	int i,j,k, lpack, l;
+	vector *voxel0, *delta, *index = NULL, *origin=NULL, *destiny=NULL;
+	int i,j,k, lor_error;
 	float seg, x, y, z;
-	vector *origin=NULL, *destiny=NULL;
-	lor * example_lor;
 	voxel0 = new_vector(-1,-1,-1);
 	delta = new_vector (1,1,1);
-	for (lpack = 0; lpack < number_of_packs; lpack++){
-		for (l = 0; l < NUMBER_OF_LORS_PER_PACK; l++){
-			example_lor = lor_packs[lpack][l];
-			free(origin);
-			free(destiny);
-			get_crystal_position(example_lor->r1, example_lor->c1, &x, &y, &z);
-			origin = new_vector(x,y,z);
-			get_crystal_position(example_lor->r2, example_lor->c2, &x, &y, &z);
-			destiny = new_vector(x,y,z);
-			for (i=0; i<2; i++){
-				for(j=0; j<2; j++){
-					for (k=0; k<2; k++){
-						free(index);
-						index = new_vector(i,j,k);
-						seg = segment (origin, destiny, delta, index, voxel0);
-						if (seg != 0){
-							sprintf(message, "voxel indice: %i,%i,%i. lor=%i,%i. Segmento: %.4f", i, j, k, lpack, l, seg);
-							info_msg(message);	
-						}
+	lor_error = get_next_lor();
+	while ( ! lor_error ){
+		for (i=0; i<2; i++){
+			for (j=0; j<2; j++){
+				for(k=0; k<2; k++){
+					free(index);
+					free(origin);
+					free(destiny);
+					if (lor_error){
+						error_msg("no se pudo cargar un LOR");
+						return -1;
+					}
+					index = new_vector(i,j,k);
+					get_crystal_position(current_lor->r1,current_lor->c1, &x, &y, &z);
+					origin = new_vector(x, y, z);
+					get_crystal_position(current_lor->r2,current_lor->c2, &x, &y, &z);
+					destiny = new_vector(x, y, z);
+					seg = segment(origin, destiny, delta, index, voxel0);
+					if (seg != 0){
+						sprintf(message, "índice %i,%i,%i\tLOR %i, seg %.4f", i, j, k, current_lor->lor_value, seg);
+						info_msg(message);
 					}
 				}
 			}
 		}
+		lor_error = get_next_lor();
 	}
+	close_lor_reader();
+	info_msg("fin del cálculo");
 	return 0;
 }

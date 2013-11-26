@@ -8,7 +8,11 @@
 
 //******************************************************************************
 vector *get_voxel(vector *position, vector *voxel0, vector *delta){
-	return sum (voxel0 , mult(position, delta));
+	vector *multiplication, *result;
+	multiplication = mult(position, delta);
+	result = sum(voxel0, multiplication);
+	free(multiplication);
+	return result;
 }
 
 //******************************************************************************
@@ -66,7 +70,7 @@ float get_inter_line_voxel (
 	//variables que representan la cara actual de un voxel, el tipo de plano, y el índice del punto encontrado
 	int voxel_face, plane_type, index=0; 
 	float p_planes[6], result=0;	
-	vector *voxel, *aux, *inter[2];
+	vector *voxel=NULL, *aux=NULL, *inter[2], *difference=NULL;
 	inter[0] = inter[1] = NULL;
 	voxel = get_voxel(voxel_index, voxel0, delta);
 	//definición de los planos
@@ -87,20 +91,18 @@ float get_inter_line_voxel (
 				index = 1;
 				free (inter[1]);
 				inter[1] = NULL;
-			}else if(index == 2){ //si hay dos puntos distintos se termina el cálculo con este voxel.
-				break;
+			}else if(index == 2){ //si hay dos puntos distintos se calcula la distancia.
+				difference = diff(inter[0], inter[1]);
+				result =  module ( difference );
+				free(inter[0]);
+				free(inter[1]);
 			}
+		} else {
+			free(aux);
 		}
 	}
-	if ( (inter[0] != NULL) && (inter[1] != NULL) ){	//si se encontraron dos intersecciones
-		//se calcula la distantia entre las intersecciones
-		result =  module ( diff (inter[0], inter[1]) );
-	}
-	//se libera memoria
-	free(inter[0]);
-	free(inter[1]);
 	free(voxel);
-	free(aux);
+	free(difference);
 	return result;
 }
 

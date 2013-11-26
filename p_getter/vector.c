@@ -41,7 +41,6 @@ vector *new_vector(float x0, float y0, float z0){
 	vector *new;
 	new = (vector *) malloc(sizeof(vector));
 	if (new == NULL){
-		
 		error_msg ("malloc() retornó NULL");
 	}
 	new->x = x0;
@@ -57,7 +56,7 @@ int inside (vector *voxel, vector *dot, vector *delta){
 	dx = abs (voxel->x - dot->x);
 	dy = abs (voxel->y - dot->y); 
 	dz = abs (voxel->z - dot->z);
-	result = ( (dx <= delta->x / 2) && (dy <= delta->y / 2) && (dz <= delta->z / 2));
+	result = ( (dx <= (delta->x / 2)) && (dy <= (delta->y / 2)) && (dz <= (delta->z / 2)));
 	return result;
 }
 
