@@ -28,28 +28,21 @@ int main(){
 	}
 	//cargar en memoria las posiciones de los cristales
 	info_msg("cargando cristales");
-	now = time(NULL);
 	error = open_crystal_reader(crystal_path);
 	if (error == CRYSTAL_READER_ERROR){
 		error_msg ("no se pudo abrir el archivo de cristales");
 		return -1;
 	}
-	now = time(NULL) - now;
-	sprintf (message, "completado en %i:%i", now / 60, now % 60);
-	info_msg(message);
 	//cargar en memoria los lors
 	info_msg ("cargando lors");
-	now = time(NULL);
 	error = open_lor_reader(lor_path);
 	if (error == LOR_READER_ERROR){
 		error_msg ("no se pudo abrir el archivo de LORs");
 		return -1;
 	}
-	now = time(NULL) - now;
-	sprintf (message, "completado en %i:%i", now / 60, now % 60);
-	info_msg(message);
 	//calcular pequeña imagen
 	info_msg("calulando imagen pequeña de prueba");
+	now = time(NULL);
 	vector *voxel0, *delta, *index = NULL, *origin=NULL, *destiny=NULL;
 	int i,j,k, lor_error;
 	float seg, x, y, z;
@@ -83,6 +76,9 @@ int main(){
 		lor_error = get_next_lor();
 	}
 	close_lor_reader();
+	now = time(NULL) - now;
+	sprintf(message, "completado en %i:%i", now/60, now%60);
+	info_msg(message);
 	info_msg("fin del cálculo");
 	return 0;
 }

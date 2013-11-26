@@ -53,7 +53,7 @@ int get_next_lor(){
 			return LOR_READER_ERROR;
 		}
 	} else {
-		error_msg("get_next_lor(): fin inesperado del archivo");
+		info_msg("get_next_lor(): alcanzado el final del archivo");
 		return LOR_READER_ERROR;
 	}
 	return LOR_READER_SUCCESS;
