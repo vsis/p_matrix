@@ -62,9 +62,20 @@ char * platform_and_device_info(){
 }
 
 //******************************************************************************
-cl_int deploy_script(char *path){
+cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z, 
+						float delta_x, float delta_y, float delta_z, float voxel0_x, 
+						float voxel0_y, float voxel0_z) {
 	cl_int error;
 	read_kernel * target_kernel;
+	char compiler_options[128];
+	//asignar el tamaño de la imagen y voxeles a las opciones del compilador
+	sprintf(compiler_options, "	-DVOXEL_INDEX_X_MAX=%i -DVOXEL_INDEX_Y_MAX=%i \
+								-DVOXEL_INDEX_Z_MAX=%i -DVOXEL_SIZE_X=%f \
+								-DVOXEL_SIZE_Y=%f -DVOXEL_SIZE_Z=%f \
+								-DVOXEL_REF_X=%f -DVOXEL_REF_Y=%f \
+								-DVOXEL_REF_Z=%f", img_size_x, img_size_y,
+								img_size_z, delta_x, delta_y, delta_z, voxel0_x,
+								voxel0_y, voxel0_z);
 	//leer el script desde el archivo
 	target_kernel = read_kernel_from_file( path );
 	if (target_kernel == NULL){
@@ -80,7 +91,7 @@ cl_int deploy_script(char *path){
 		return DEPLOYER_ERROR;
 	}
 	//compilar el programa
-	error = clBuildProgram(program, 1, &device, NULL, NULL, NULL);
+	error = clBuildProgram(program, 1, &device, compiler_options, NULL, NULL);
 	if (error != CL_SUCCESS)
 	{
 		size_t len;
@@ -94,7 +105,7 @@ cl_int deploy_script(char *path){
 		return DEPLOYER_ERROR;
 	}
 	//obtener la función (kernel) que se ejecutará del programa.
-	kernel_square = clCreateKernel(program, "examplePos", &error);
+	kernel_square = clCreateKernel(program, "getVoxels", &error);
 	if (error != CL_SUCCESS){
 		sprintf(message, "deployt_script(path= %s): clCreateKernel() ha devuelto un error número %i", path, error);
 		error_msg(message);

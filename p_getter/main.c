@@ -21,7 +21,7 @@ int main(){
 	set_device();
 	device_info = platform_and_device_info();
 	printf ("%s", device_info);
-	error = deploy_script ("calc.cl");
+	error = deploy_script ("calc.cl", 2, 2, 2, 1, 1, 1, -1, -1, -1);
 	if (error < CL_SUCCESS){
 		error_msg ("no se cargó el kernel");
 		return -1;	
@@ -43,18 +43,7 @@ int main(){
 	//calcular pequeña imagen
 	info_msg("calulando imagen pequeña de prueba");
 	now = time(NULL);
-	int lor_error;
-	float * p_row;
-	set_img_size(2,2,2);
-	set_voxel_size(1,1,1);
-	set_voxel0_position(-1,-1,-1);
-	set_p_method(P_CPU);
-	lor_error = get_next_lor();
-	while ( ! lor_error ){
-		p_row = get_p_row();
-		lor_error = get_next_lor();
-		free(p_row);
-	}
+	
 	close_lor_reader();
 	now = time(NULL) - now;
 	sprintf(message, "completado en %i:%i", now/60, now%60);
