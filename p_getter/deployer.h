@@ -19,7 +19,9 @@ cl_platform_id platform;
 cl_device_id device;
 cl_context context;
 cl_program program;
+cl_command_queue commands;
 cl_kernel kernel_square;
+cl_mem output;
 
 //******************************************************************************
 //variables usadas como entrada y salida para alimentar los cálculos de segmentos
@@ -45,6 +47,5 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 						float voxel0_y, float voxel0_z);
 
 //******************************************************************************
-//inicializa los arrays usados para obtener los voxeles atravezados por un lor y
-//sus respectivos tamaños de segmento.
-int set_input_output();
+//función de prueba
+float * get_voxel_positions(int num_of_voxels);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #include <CL/opencl.h>
 
 #include "crystal_reader.h"
@@ -43,10 +44,23 @@ int main(){
 	//calcular pequeña imagen
 	info_msg("calulando imagen pequeña de prueba");
 	now = time(NULL);
-	
+	float * pos;
+	int i;
+	pos = get_voxel_positions(8);
+	if (pos){
+		for (i=0; i<24; i += 3){
+			printf("pos: %.4f %.4f %.4f\n", pos[i], pos[i+1], pos[i+2]);
+		}
+	}
 	close_lor_reader();
 	now = time(NULL) - now;
 	sprintf(message, "completado en %i:%i", now/60, now%60);
 	info_msg(message);
+	clReleaseMemObject(output);
+    clReleaseKernel(kernel_square);
+    clReleaseProgram(program);
+    clReleaseCommandQueue(commands);
+    clReleaseContext(context);
+    free(pos);
 	return 0;
 }

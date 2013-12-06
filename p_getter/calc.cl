@@ -15,7 +15,7 @@ float3 getVoxel (private int index)
 	vox_index.z = index % img_size.z;
 	vox_index.y = (index / img_size.z) % img_size.y;
 	vox_index.x = (index / img_size.z) / img_size.y;
-	//calcular la pocición
+	//calcular la posición
 	return fma ( convert_float3(vox_index), delta, voxel0); 
 }
 

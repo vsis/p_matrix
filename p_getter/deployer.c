@@ -10,6 +10,7 @@
 
 char message[4096];
 
+
 //******************************************************************************
 int set_device(){
 	cl_int error;
@@ -40,6 +41,13 @@ int set_device(){
 		error_msg(message);
 		return DEPLOYER_ERROR;
 	}
+	//crear una cola para enviar los kernels
+	commands = clCreateCommandQueue(context, device, 0, &error);
+    if (!commands){
+        sprintf(message, "set_device(): clCreateComandQueue retornó un error n° %i", error);
+        error_msg(message);
+        return DEPLOYER_ERROR;
+    }
 	return DEPLOYER_SUCCESS;
 }
 
@@ -111,6 +119,60 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 		error_msg(message);
 		return DEPLOYER_ERROR;
 	}
+	free(target_kernel);
 	return DEPLOYER_SUCCESS;
 }
 
+//******************************************************************************
+float * get_voxel_positions(int num_of_voxels){
+	float * positions;
+	int error;
+	size_t local, global = num_of_voxels;
+	positions = (float *) calloc(num_of_voxels * 3, sizeof(float));
+	if (positions == NULL){
+		error_msg("get_voxel_positions(): calloc retornó NULL");
+		return NULL;
+	}
+	//crear el buffer de salida donde escribirá el kernel
+	output = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * num_of_voxels * 3, NULL, NULL);
+	if (!output){
+		error_msg("get_voxel_positions(): clCreateBuffer() no asignó memoria de salida");
+		return NULL;
+	}
+	//asignar el buffer de salida como argumento del kernel
+	 error  = clSetKernelArg(kernel_square, 0, sizeof(cl_mem), &output);
+	 if (error != CL_SUCCESS){
+		sprintf(message, "get_voxel_positions(): clSetKernelArg retornó un error n° %i", error);
+		error_msg(message);
+		return NULL;
+	 }
+	//obtener el tamaño del local workgroup
+	error = clGetKernelWorkGroupInfo(kernel_square, device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(local), &local, NULL);
+	if (error != CL_SUCCESS){
+		sprintf(message, "get_voxel_positions(): clGetKernelWorkGroupInfo retornó un error n° %i", error);
+		error_msg(message);
+		return NULL;	
+	}
+	//enviar el kernel a la cola de ejecución
+	if(local > global){
+		local = global;
+	}
+	error = clEnqueueNDRangeKernel(commands, kernel_square, 1, NULL, &global, &local, 0, NULL, NULL);
+	if (error != CL_SUCCESS){
+		sprintf(message, "get_voxel_positions(): clEnqueueNDRangeKernel retornó un error n° %i", error);
+		error_msg(message);
+		sprintf(message, "global= %i local= %i", (int)global, (int)local);
+		info_msg(message);
+		return NULL;	
+	}
+	//esperar hasta que termine su ejecución
+	clFinish(commands);
+	//leer los resultados
+	error = clEnqueueReadBuffer( commands, output, CL_TRUE, 0, sizeof(float) * num_of_voxels * 3, positions, 0, NULL, NULL );
+	if (error != CL_SUCCESS){
+		sprintf(message, "get_voxel_positions(): clEnqueueReadBuffer retornó un error n° %i", error);
+		error_msg(message);
+		return NULL;	
+	}
+	return positions;
+}
