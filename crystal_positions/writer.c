@@ -9,7 +9,7 @@
 int start_logger (char *logger_path, FILE **log_file){
 	*log_file = fopen (logger_path, "w");
 	if (*log_file != NULL){
-		fprintf (*log_file,"RING NUM\tBLOCK NUM\tCRYSTAL NUM\t--- POSITION ---\n");
+		//fprintf (*log_file,"RING NUM\tBLOCK NUM\tCRYSTAL NUM\t--- POSITION ---\n");
 		return WRITER_SUCCESS;
 	}
 	else{
