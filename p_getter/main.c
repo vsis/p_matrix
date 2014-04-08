@@ -23,7 +23,7 @@ int main(){
 	device_info = platform_and_device_info();
 	printf ("%s", device_info);
 	error = deploy_script ("calc.cl", 2, 2, 2, 1, 1, 1, -1, -1, -1);
-	if (error < CL_SUCCESS){
+	if (error != CL_SUCCESS){
 		error_msg ("no se cargó el kernel");
 		return -1;	
 	}
@@ -47,20 +47,19 @@ int main(){
 	float * pos;
 	int i;
 	pos = get_voxel_positions(8);
-	if (pos){
-		for (i=0; i<24; i += 3){
-			printf("pos: %.4f %.4f %.4f\n", pos[i], pos[i+1], pos[i+2]);
+	if (pos != NULL){
+		if (pos){
+			for (i=0; i<24; i += 3){
+				printf("pos: %.4f %.4f %.4f\n", pos[i], pos[i+1], pos[i+2]);
+			}
 		}
+	} else {
+		error_msg("pos = NULL");
 	}
 	close_lor_reader();
 	now = time(NULL) - now;
 	sprintf(message, "completado en %i:%i", now/60, now%60);
 	info_msg(message);
-	clReleaseMemObject(output);
-    clReleaseKernel(kernel_square);
-    clReleaseProgram(program);
-    clReleaseCommandQueue(commands);
-    clReleaseContext(context);
     free(pos);
 	return 0;
 }

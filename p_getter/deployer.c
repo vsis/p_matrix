@@ -119,7 +119,7 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 		error_msg(message);
 		return DEPLOYER_ERROR;
 	}
-	free(target_kernel);
+	//free(target_kernel);
 	return DEPLOYER_SUCCESS;
 }
 
@@ -174,5 +174,10 @@ float * get_voxel_positions(int num_of_voxels){
 		error_msg(message);
 		return NULL;	
 	}
+	clReleaseMemObject(output);
+    clReleaseKernel(kernel_square);
+    clReleaseProgram(program);
+    clReleaseCommandQueue(commands);
+    clReleaseContext(context);
 	return positions;
 }
