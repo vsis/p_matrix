@@ -21,7 +21,14 @@ cl_context context;
 cl_program program;
 cl_command_queue commands;
 cl_kernel kernel_square;
-cl_mem output;
+cl_mem output, input_crystal0, input_crystal1;
+
+//******************************************************************************
+//variables usadas para definir la geometría del scanner y la imagen
+int IMG_SIZE_X, IMG_SIZE_Y, IMG_SIZE_Z; //resolución de la imagen.
+float VOXEL_SIZE_X, VOXEL_SIZE_Y, VOXEL_SIZE_Z; //tamaño del voxel.
+int NUMBER_OF_LORS;	//cantidad de LORs que posee el scanner.
+int NUMBER_OF_VOXELS; //cantidad de voxeles que posee la imagen
 
 //******************************************************************************
 //variables usadas como entrada y salida para alimentar los cálculos de segmentos
@@ -45,6 +52,15 @@ char * platform_and_device_info();
 cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z, 
 						float delta_x, float delta_y, float delta_z, float voxel0_x, 
 						float voxel0_y, float voxel0_z);
+
+//******************************************************************************
+//recibe las posiciones de los dos cristales de un LOR y retorna un array que representa
+//la fila LOR de la matriz P
+float * get_segments(float * crystal0, float * crystal1);
+
+//******************************************************************************
+//libera los objetos usados para deployar el kernel
+void release_script();
 
 //******************************************************************************
 //función de prueba

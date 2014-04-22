@@ -54,6 +54,7 @@ int get_next_lor(){
 		}
 	} else {
 		warning_msg("get_next_lor(): alcanzado el final del archivo");
+		current_lor = NULL;
 		return LOR_READER_ERROR;
 	}
 	return LOR_READER_SUCCESS;

@@ -14,7 +14,7 @@ int open_crystal_reader(char * path){	//carga los cristales del archivo path en 
 	if (crystal_input_file == NULL){
 		return CRYSTAL_READER_ERROR;
 	}
-	fgets(buffer, 256, crystal_input_file);		//descartar la primera línea del archivo
+	//fgets(buffer, 256, crystal_input_file);		//descartar la primera línea del archivo
 	positions_x = (float *) calloc( NUMBER_OF_ELEMENTS, sizeof(float) );
 	positions_y = (float *) calloc( NUMBER_OF_ELEMENTS, sizeof(float) );
 	positions_z = (float *) calloc( NUMBER_OF_ELEMENTS, sizeof(float) );
