@@ -83,6 +83,7 @@ int write_all_lors(){
 			char message[64];
 			sprintf(message, "write_all_lors(): get_minor() retornó -1 en la iteración nº %i",i);
 			error_msg(message);
+			return WRITER_ERROR;
 		}
 	}
 	fclose(writer_output);
