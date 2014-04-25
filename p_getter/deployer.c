@@ -75,7 +75,7 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 						float voxel0_y, float voxel0_z) {
 	cl_int error;
 	read_kernel * target_kernel;
-	char compiler_options[128];
+	char compiler_options[1024];
 	//asignar los valores a las variables globales
 	IMG_SIZE_X = img_size_x;
 	IMG_SIZE_Y = img_size_y;
@@ -85,7 +85,7 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 	VOXEL_SIZE_Z = delta_z;
 	NUMBER_OF_VOXELS = IMG_SIZE_X * IMG_SIZE_Y* IMG_SIZE_Z;
 	//asignar el tamaño de la imagen y voxeles a las opciones del compilador
-	sprintf(compiler_options, "	-DVOXEL_INDEX_X_MAX=%i -DVOXEL_INDEX_Y_MAX=%i -DVOXEL_INDEX_Z_MAX=%i -DVOXEL_SIZE_X=%f -DVOXEL_SIZE_Y=%f -DVOXEL_SIZE_Z=%f -DVOXEL_REF_X=%f -DVOXEL_REF_Y=%f -DVOXEL_REF_Z=%f",
+	sprintf(compiler_options, "-DVOXEL_INDEX_X_MAX=%i -DVOXEL_INDEX_Y_MAX=%i -DVOXEL_INDEX_Z_MAX=%i -DVOXEL_SIZE_X=%f -DVOXEL_SIZE_Y=%f -DVOXEL_SIZE_Z=%f -DVOXEL_REF_X=%f -DVOXEL_REF_Y=%f -DVOXEL_REF_Z=%f",
 								img_size_x, img_size_y,	img_size_z, 
 								delta_x, delta_y, delta_z, 
 								voxel0_x, voxel0_y, voxel0_z);
