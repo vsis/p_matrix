@@ -53,8 +53,8 @@ int set_device(){
 
 //******************************************************************************
 char * platform_and_device_info(){
-	char plat_name[64], plat_vendor[64];
-	char dev_name[64];
+	char plat_name[128], plat_vendor[128];
+	char dev_name[128];
 	char * printable_info;
 	clGetPlatformInfo(platform, CL_PLATFORM_NAME, sizeof(plat_name), plat_name, NULL);
 	clGetPlatformInfo(platform, CL_PLATFORM_VENDOR, sizeof(plat_vendor), plat_vendor, NULL);
@@ -85,13 +85,10 @@ cl_int deploy_script(char *path, int img_size_x, int img_size_y, int img_size_z,
 	VOXEL_SIZE_Z = delta_z;
 	NUMBER_OF_VOXELS = IMG_SIZE_X * IMG_SIZE_Y* IMG_SIZE_Z;
 	//asignar el tamaño de la imagen y voxeles a las opciones del compilador
-	sprintf(compiler_options, "	-DVOXEL_INDEX_X_MAX=%i -DVOXEL_INDEX_Y_MAX=%i \
-								-DVOXEL_INDEX_Z_MAX=%i -DVOXEL_SIZE_X=%f \
-								-DVOXEL_SIZE_Y=%f -DVOXEL_SIZE_Z=%f \
-								-DVOXEL_REF_X=%f -DVOXEL_REF_Y=%f \
-								-DVOXEL_REF_Z=%f", img_size_x, img_size_y,
-								img_size_z, delta_x, delta_y, delta_z, voxel0_x,
-								voxel0_y, voxel0_z);
+	sprintf(compiler_options, "	-DVOXEL_INDEX_X_MAX=%i -DVOXEL_INDEX_Y_MAX=%i -DVOXEL_INDEX_Z_MAX=%i -DVOXEL_SIZE_X=%f -DVOXEL_SIZE_Y=%f -DVOXEL_SIZE_Z=%f -DVOXEL_REF_X=%f -DVOXEL_REF_Y=%f -DVOXEL_REF_Z=%f",
+								img_size_x, img_size_y,	img_size_z, 
+								delta_x, delta_y, delta_z, 
+								voxel0_x, voxel0_y, voxel0_z);
 	//leer el script desde el archivo
 	target_kernel = read_kernel_from_file( path );
 	if (target_kernel == NULL){
@@ -136,7 +133,7 @@ float * get_segments(float * crystal0, float * crystal1){
 	size_t local, global = (size_t) NUMBER_OF_VOXELS; //número de unidades de trabajo openCL
 	int error;  //errores devueltos por openCL
 	float * segments = (float *) calloc (NUMBER_OF_VOXELS, sizeof(float));
-	char message[128];
+	char message[256];
 	if (segments != NULL){
 		//crear buffers de entrada que contienen las posiciones de los cristales del LOR
 		input_crystal0 = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float) * 3, NULL, NULL);

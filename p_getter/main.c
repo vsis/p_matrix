@@ -19,7 +19,7 @@ void lor_to_crys(lor * _lor, float * crys0, float * crys1){
 
 int main(){
 	int now, error;
-	char *crystal_path, *lor_path, *device_info, message[64];
+	char *crystal_path, *lor_path, *device_info, message[256];
 	crystal_path = "crystals.txt";
 	lor_path = "sorted_lors.bin";
 	set_msg_debug("stdout");
@@ -27,7 +27,7 @@ int main(){
 	set_device();
 	device_info = platform_and_device_info();
 	printf ("%s", device_info);
-	error = deploy_script ("calc.cl", 2, 2, 2, 1, 1, 1, -.5, -.5, -.5);
+	error = deploy_script ("calc.cl", 64, 64, 32, 0.541835, 0.541835, 0.556875, -17.0678025, -17.0678025, -17.5415625);
 	if (error != CL_SUCCESS){
 		error_msg ("no se cargó el kernel");
 		return -1;	
@@ -47,7 +47,7 @@ int main(){
 		return -1;
 	}
 	//calcular pequeña imagen
-	info_msg("calulando imagen pequeña de prueba (1024 LORS)");
+	info_msg("calulando imagen pequeña de prueba");
 	now = time(NULL);
 	float * segs, crys0[3], crys1[3];
 	int i = 0;
@@ -61,14 +61,14 @@ int main(){
 			sprintf(message, "get_segments retornó NULL para el LOR %i", current_lor->lor_value);
 			error_msg(message);
 		}
-		if (i%1000000 == 0){
-			sprintf(message, "%i M LORs procesados", i / 1000000);
+		get_next_lor();
+		if (i%1000 == 0){
+			sprintf(message, "%i LORs procesados", i);
 			info_msg(message);
 		}
-		get_next_lor();
 		i++;
 	}
-	sprintf(message, "%i M LORs procesados. Fin del procedimiento", i / 1000000);
+	sprintf(message, "%i LORs procesados. Fin del procedimiento", i);
 	info_msg(message);
 	release_script();
 	close_lor_reader();

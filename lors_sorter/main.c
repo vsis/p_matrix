@@ -81,7 +81,7 @@ int argsm (int argc, char *argv[]){
 //procedimiento principal
 int main(int argc, char *argv[]){
 	int now, error;
-	char *sorted_path, *lor_path, message[64];
+	char *sorted_path, *lor_path, message[256];
 	//leer los argumentos con los que el programa fue llamado
 	error = argsm(argc, argv);
 	if (error){		//si los argumentos no eran correctos se termina el programa.

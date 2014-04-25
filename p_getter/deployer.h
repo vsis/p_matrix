@@ -61,7 +61,3 @@ float * get_segments(float * crystal0, float * crystal1);
 //******************************************************************************
 //libera los objetos usados para deployar el kernel
 void release_script();
-
-//******************************************************************************
-//función de prueba
-float * get_voxel_positions(int num_of_voxels);

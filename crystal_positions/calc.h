@@ -1,7 +1,7 @@
-#define CRYSTALS_PER_BLOCK_RING 13	//número de cristales por bloque por anillo y por línea
-#define BLOCKS_PER_LINE 3		//número de bloques en una línea
-#define BLOCKS_PER_RING 48		//número de bloques en un anillo.
-#define CRYSTALS_PER_LINE 39		//número de anillos (cristales por línea)
+#define CRYSTALS_PER_BLOCK_RING 8	//número de cristales por bloque por anillo y por línea
+#define BLOCKS_PER_LINE 1		//número de bloques en una línea
+#define BLOCKS_PER_RING 6		//número de bloques en un anillo.
+#define CRYSTALS_PER_LINE 8		//número de anillos (cristales por línea)
 
 //******************************************************************************
 //Tipo de dato que representa un cristal del anillo

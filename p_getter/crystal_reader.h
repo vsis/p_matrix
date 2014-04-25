@@ -5,8 +5,8 @@
 
 #define CRYSTAL_READER_SUCCESS 0
 #define CRYSTAL_READER_ERROR 1
-#define NUMBER_OF_ELEMENTS 24336
-#define NUMBER_OF_RINGS 39
+#define NUMBER_OF_ELEMENTS 384
+#define NUMBER_OF_RINGS 8
 
 FILE *crystal_input_file;		//descriptor del archivo que contiene las posiciones de los cristales
 float * positions_x;		//todas las posiciones (eje x)

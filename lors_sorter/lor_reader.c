@@ -4,7 +4,7 @@
 #include "lor_reader.h"
 #include "debug.h"
 
-char message[64];
+char message[256];
 
 //******************************************************************************
 lor * new_lor(int lor_value, int r1, int c1, int r2, int c2){

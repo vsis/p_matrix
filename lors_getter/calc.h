@@ -1,16 +1,16 @@
-#define CRYSTALS_PER_BLOCK_RING 13	//número de cristales por bloque por anillo y por línea
-#define BLOCKS_PER_LINE 3		//número de bloques en una línea
-#define BLOCKS_PER_RING 48		//número de bloques en un anillo.
-#define CRYSTALS_PER_LINE 39		//número de cristales por línea. Número de anillos.
+#define CRYSTALS_PER_BLOCK_RING 8	//número de cristales por bloque por anillo y por línea
+#define BLOCKS_PER_LINE 1		//número de bloques en una línea
+#define BLOCKS_PER_RING 6		//número de bloques en un anillo.
+#define CRYSTALS_PER_LINE 8		//número de anillos (cristales por línea)
 
 //los tipos de planos:
 #define Z_PLANE 0	//plano perpendicular al eje Z
 #define Y_PLANE 1	//...al eje Y
 #define X_PLANE 2	//...al eje X
 //tamaño de la imagen
-#define X_SIZE 682.08
-#define Y_SIZE 682.08
-#define Z_SIZE 162
+#define X_SIZE 34.68
+#define Y_SIZE 34.68
+#define Z_SIZE 17.8
 
 int LP;			//constante LP para el cáluclo de LORs
 float p_planes[6];	//valor de los ejes cartesianos donde se cortan los planos que definene las caras de la imágen

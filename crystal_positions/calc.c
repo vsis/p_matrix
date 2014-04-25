@@ -8,17 +8,17 @@
 
 //******************************************************************************
 void init_variables(){
-	angle_per_block = (2.00 * M_PI)  / BLOCKS_PER_RING; 	//el escáner tiene 48 bloques en un anillo
-	radius = 405;		
-	inter_crystal = 0.078;
+	angle_per_block = (2.00 * M_PI)  / BLOCKS_PER_RING; 	//el escáner tiene 6 bloques en un anillo
+	radius = 15.515;		
+	inter_crystal = 0.067;
 	inter_crystal_half = inter_crystal / 2.00;
-	crystal_width = 4.00;
+	crystal_width = 2.162;
 	crystal_width_half = crystal_width / 2.00;
 	width_half = inter_crystal_half + crystal_width_half;
-	block_size = 13 * ( crystal_width + inter_crystal );
+	block_size = 8 * ( crystal_width + inter_crystal );
 	block_size_half = block_size / 2.00;
 	inter_block = crystal_width;
-	initial_z_axis = -(inter_block + 19 * (inter_crystal + crystal_width) );
+	initial_z_axis = -8 * (inter_crystal + crystal_width);
 }
 
 
