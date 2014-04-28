@@ -66,11 +66,7 @@ int main(){
 	}
 	get_next_lor();
 	for (i=0; i<total_lors; i++){	//se calculan y escriben los lors uno por uno
-		if (current_lor == NULL){
-			warning_msg("current_lor es NULL");
-			break;
-		}
-		if ( current_lor->lor_value == i){
+		if ((current_lor != NULL) && (current_lor->lor_value == i)){
 			lor_to_crys(current_lor, crys0, crys1);
 			segs = get_segments(crys0, crys1);
 			add_lor(i, segs);

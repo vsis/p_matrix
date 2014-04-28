@@ -66,8 +66,8 @@ int add_lor(int lor_index, float * segments){
 //**********************************************************************
 int write_p_matrix(){
 	int written_elements;
-	written_elements = fwrite(a2r, sizeof(int), number_of_total_lors, P_FILE);
-	if (written_elements != number_of_total_lors){
+	written_elements = fwrite(a2r, sizeof(int), (number_of_total_lors * 2) + 1, P_FILE);
+	if (written_elements != (number_of_total_lors * 2) + 1){
 		error_msg("error al escribir el array a2r");
 		return P_WRITER_ERROR;
 	}
