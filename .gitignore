@@ -4,6 +4,7 @@
 *.txt
 *.bin
 .commit-msg
+*.pmatrix
 
 #ejecutables
 crystal_positions/crystal_positions

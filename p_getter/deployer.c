@@ -22,7 +22,7 @@ int set_device(){
 		return DEPLOYER_ERROR;
 	}
 	//selecciona el primer dispositivo de la primera plataforma
-	error = clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &device, NULL);
+	error = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
 	if (error != CL_SUCCESS)
 	{
 		sprintf(message, "set_device(): clGetDeviceIDs() retornó un error número %i", error);

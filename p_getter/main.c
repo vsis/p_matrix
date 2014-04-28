@@ -10,6 +10,7 @@
 #include "cl_reader.h"
 #include "vector.h"
 #include "p_getter.h"
+#include "p_writer.h"
 #include "debug.h"
 
 void lor_to_crys(lor * _lor, float * crys0, float * crys1){
@@ -47,29 +48,46 @@ int main(){
 		return -1;
 	}
 	//calcular pequeña imagen
-	info_msg("calulando imagen pequeña de prueba");
+	info_msg("creando matriz P pequeña de prueba");
 	now = time(NULL);
+	int i = 0, total_lors = 72192;
 	float * segs, crys0[3], crys1[3];
-	int i = 0;
-	get_next_lor();
-	while(current_lor != NULL) {
-		lor_to_crys(current_lor, crys0, crys1);
-		segs = get_segments(crys0, crys1);
-		if (segs != NULL){
-			free(segs);
-		} else {
-			sprintf(message, "get_segments retornó NULL para el LOR %i", current_lor->lor_value);
-			error_msg(message);
-		}
-		get_next_lor();
-		if (i%1000 == 0){
-			sprintf(message, "%i LORs procesados", i);
-			info_msg(message);
-		}
-		i++;
+	now = time(NULL);
+	error = init_p(total_lors, 64 * 64 * 32);	//se crean la matriz p resumida y vacía
+												//para un total de 72192 lors y una imagen de 60x60x32
+	if (error == P_WRITER_ERROR){
+		error_msg("ocurrió un error al ejecutar init_p()");
+		return -1;
 	}
-	sprintf(message, "%i LORs procesados. Fin del procedimiento", i);
-	info_msg(message);
+	error = open_p_file("test.pmatrix");
+	if (error == P_WRITER_ERROR){
+		error_msg("ocurrió un error al abrir el archivo de la matriz P");
+		return -1;
+	}
+	get_next_lor();
+	for (i=0; i<total_lors; i++){	//se calculan y escriben los lors uno por uno
+		if (current_lor == NULL){
+			warning_msg("current_lor es NULL");
+			break;
+		}
+		if ( current_lor->lor_value == i){
+			lor_to_crys(current_lor, crys0, crys1);
+			segs = get_segments(crys0, crys1);
+			add_lor(i, segs);
+			get_next_lor();
+		} else {
+			add_lor(i, NULL);
+		}
+	}
+	//ahora escribimos la matriz p en un archivo
+	error = write_p_matrix();
+	if (error == P_WRITER_ERROR){
+		error_msg("ocurrió un error al intentar escribir la matriz P");
+		return -1;
+	}
+	info_msg("matriz P escrita");
+	//cerrar archivos de entrada/salida y liberar memoria
+	close_p_file();
 	release_script();
 	close_lor_reader();
 	now = time(NULL) - now;
