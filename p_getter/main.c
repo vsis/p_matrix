@@ -69,10 +69,16 @@ int main(){
 		if ((current_lor != NULL) && (current_lor->lor_value == i)){
 			lor_to_crys(current_lor, crys0, crys1);
 			segs = get_segments(crys0, crys1);
-			add_lor(i, segs);
+			error = add_lor(i, segs);
+			if (error == P_WRITER_ERROR){
+				break;
+			}
 			get_next_lor();
 		} else {
-			add_lor(i, NULL);
+			error = add_lor(i, NULL);
+			if (error == P_WRITER_ERROR){
+				break;
+			}
 		}
 	}
 	//ahora escribimos la matriz p en un archivo
