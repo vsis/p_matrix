@@ -2,6 +2,8 @@
 #define BLOCKS_PER_LINE 1		//número de bloques en una línea
 #define BLOCKS_PER_RING 6		//número de bloques en un anillo.
 #define CRYSTALS_PER_LINE 8		//número de anillos (cristales por línea)
+#define CRYSTALS_PER_RING 48	//número de cristales por anillo
+#define NUMBER_OF_RINGS	8		//número de anillos
 
 //los tipos de planos:
 #define Z_PLANE 0	//plano perpendicular al eje Z
@@ -12,12 +14,13 @@
 #define Y_SIZE 34.68
 #define Z_SIZE 17.8
 
+int lors_per_ring;
 int LP;			//constante LP para el cáluclo de LORs
 float p_planes[6];	//valor de los ejes cartesianos donde se cortan los planos que definene las caras de la imágen
 
 //******************************************************************************
 //calcula el índice LOR según los números de anillo, cristal y bloque
-int LOR_index(int r1, int c1, int b1, int r2, int c2, int b2);
+int LOR_index(int r1, int c1, int r2, int c2);
 
 //******************************************************************************
 //asigna el valor correspondiente a la variable LP

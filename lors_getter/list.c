@@ -77,7 +77,7 @@ crystal * get_next_j_element(list *linked_list){
 void set_ij(list *linked_list){
 	if (linked_list->i != NULL){
 		linked_list->j = linked_list->i;
-		linked_list->i = linked_list->i->next;
+		//linked_list->i = linked_list->i->next;
 	}
 }
 

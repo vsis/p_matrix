@@ -7,10 +7,10 @@
 
 //******************************************************************************
 float module(vector *entrada){
-	float x2 = pow(entrada->x, 2);
-	float y2 = pow(entrada->y, 2);
-	float z2 = pow(entrada->z, 2);
-	return sqrt(x2 + y2 + z2);
+	float x2 = powf(entrada->x, 2);
+	float y2 = powf(entrada->y, 2);
+	float z2 = powf(entrada->z, 2);
+	return sqrtf(x2 + y2 + z2);
 }
 
 //******************************************************************************
@@ -53,9 +53,9 @@ vector *new_vector(float x0, float y0, float z0){
 int inside (vector *voxel, vector *dot, vector *delta){
 	float dx, dy, dz;
 	int result;
-	dx = abs (voxel->x - dot->x);
-	dy = abs (voxel->y - dot->y); 
-	dz = abs (voxel->z - dot->z);
+	dx = fabsf (voxel->x - dot->x);
+	dy = fabsf (voxel->y - dot->y); 
+	dz = fabsf (voxel->z - dot->z);
 	result = ( (dx <= (delta->x / 2)) && (dy <= (delta->y / 2)) && (dz <= (delta->z / 2)));
 	return result;
 }
@@ -63,9 +63,9 @@ int inside (vector *voxel, vector *dot, vector *delta){
 //******************************************************************************
 int equal (vector *v0, vector *v1){
 	int eq_x, eq_y, eq_z;
-	eq_x = v0->x == v1->x;
-	eq_y = v0->y == v1->y;
-	eq_z = v0->z == v1->z;
+	eq_x = (v0->x == v1->x);
+	eq_y = (v0->y == v1->y);
+	eq_z = (v0->z == v1->z);
 	return (eq_x && eq_y && eq_z);
 }
 

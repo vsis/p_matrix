@@ -18,7 +18,7 @@ void init_variables(){
 	block_size = 8 * ( crystal_width + inter_crystal );
 	block_size_half = block_size / 2.00;
 	inter_block = crystal_width;
-	initial_z_axis = -8 * (inter_crystal + crystal_width);
+	initial_z_axis = -3.5 * (inter_crystal + crystal_width);
 }
 
 
@@ -40,8 +40,8 @@ crystal * create_crystal(int _num, int _block, int _ring, vector *_position){
 //******************************************************************************
 vector * calc_block(int block_num){
 	float x,y;
-	x = cos( block_num * angle_per_block ) * radius;
-	y = sin( block_num * angle_per_block ) * radius;
+	x = cosf( block_num * angle_per_block ) * radius;
+	y = sinf( block_num * angle_per_block ) * radius;
 	return new_vector (x, y, 0.00);
 }
  

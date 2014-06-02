@@ -7,7 +7,7 @@
 #include "debug.h"
 
 //******************************************************************************
-int LOR_index(int r1, int c1, int b1, int r2, int c2, int b2){
+int deprecated_LOR_index(int r1, int c1, int b1, int r2, int c2, int b2){
 	int o, i, lor;
 
 	o = b2 - 1 + (BLOCKS_PER_RING * b1);
@@ -17,15 +17,26 @@ int LOR_index(int r1, int c1, int b1, int r2, int c2, int b2){
 	i += (c1 % CRYSTALS_PER_BLOCK_RING) * CRYSTALS_PER_BLOCK_RING;
 	i += c2 % CRYSTALS_PER_BLOCK_RING;
 
-	lor = (r1 * CRYSTALS_PER_LINE) + r2;
+	lor = (r1 * CRYSTALS_PER_RING) + r2;
 	lor *= LP;
 	lor += i;
 	
 	return lor;
 }	
 
+int LOR_index(int r1, int c1, int r2, int c2){
+	int offset1, offset2, lor;
+	offset1 = r1 * NUMBER_OF_RINGS + r2;
+	offset2 = (c2 - 1) + CRYSTALS_PER_RING * c1 - c1 * (c1 + 3)/2;
+	lor = offset1 * lors_per_ring + offset2;
+	return lor;
+}
+
 //******************************************************************************
 void set_LP(){
+	lors_per_ring = CRYSTALS_PER_RING * (CRYSTALS_PER_RING - 1 ) / 2;
+	
+	
 	LP = BLOCKS_PER_RING * (BLOCKS_PER_RING - 1);
 	LP /= 2;
 	LP *= CRYSTALS_PER_BLOCK_RING * CRYSTALS_PER_BLOCK_RING;
@@ -51,7 +62,7 @@ int LOR_crystal(crystal *a, crystal *b){
 	if ( b1 == b2 ){ 	//si tienen el mismo bloque no tiene sentido el cálculo.
 		return -1;
 	}else if ( get_intersection_line_image ( a, b ) ){
-		return LOR_index (r1, c1, b1, r2, c2, b2);
+		return LOR_index (r1, c1, r2, c2);
 	}else{
 		return -1;
 	}

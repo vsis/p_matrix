@@ -6,9 +6,9 @@
 
 //******************************************************************************
 float module(vector *entrada){
-	float x2 = pow(entrada->x, 2);
-	float y2 = pow(entrada->y, 2);
-	float z2 = pow(entrada->z, 2);
+	float x2 = powf(entrada->x, 2);
+	float y2 = powf(entrada->y, 2);
+	float z2 = powf(entrada->z, 2);
 	return sqrt(x2 + y2 + z2);
 }
 

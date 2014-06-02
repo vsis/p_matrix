@@ -4,34 +4,36 @@
  * 	retorna una fila de la matriz 
  */
 
+
+#define MIN_DIST 0.1	//distancia mínima para considerar dos puntos iguales
+
 /*
  *	obtiene el centro del voxel a partir del índice
  */
 float3 getVoxel (private int index)
 {
-	int3 vox_index, img_size;
-	float3 delta, voxel0;
-	//definir delta y voxel0
+	float3 img_size, vox_index, delta, voxel0;
+	//definir delta, voxel0 y tamaño de la imagen
 	delta = (float3) (VOXEL_SIZE_X, VOXEL_SIZE_Y, VOXEL_SIZE_Z);
 	voxel0 = (float3) (VOXEL_REF_X, VOXEL_REF_Y, VOXEL_REF_Z);
-	//obtener el tamaño de la imagen
-	img_size = (int3) (VOXEL_INDEX_X_MAX, VOXEL_INDEX_Y_MAX, VOXEL_INDEX_Z_MAX);
+	img_size = (float3) (VOXEL_INDEX_X_MAX, VOXEL_INDEX_Y_MAX, VOXEL_INDEX_Z_MAX);
 	//calcular índice del voxel
-	vox_index.z = index % img_size.z;
-	vox_index.y = (index / img_size.z) % img_size.y;
-	vox_index.x = (index / img_size.z) / img_size.y;
+	float x_index = trunc(index / img_size.x);
+	vox_index.x = fmod(index, img_size.x);
+	vox_index.y = fmod(x_index, img_size.y );
+	vox_index.z = trunc( x_index / img_size.y );
 	//calcular la posición
-	return fma ( convert_float3(vox_index), delta, voxel0); 
+	return mad(vox_index, delta, voxel0); 
 }
 
 /*
  *	Obtiene la intersección de una recta (definida por origin y direction)
  *	y un plano perpendicular a Z (definido por pPlane)
  */
-float3 getInterLinePlaneZ(private int pPlane, private float3 origin, private float3 direction){
+float3 getInterLinePlaneZ(private float pPlane, private float3 origin, private float3 direction){
 	float3 inter;
-	inter.x = fma (pPlane - origin.z, direction.x/direction.z, origin.x);
-	inter.y = fma (pPlane - origin.z, direction.y/direction.z, origin.y);
+	inter.x = mad (pPlane - origin.z, direction.x/direction.z, origin.x);
+	inter.y = mad (pPlane - origin.z, direction.y/direction.z, origin.y);
 	inter.z = pPlane;
 	return inter;
 }
@@ -40,10 +42,10 @@ float3 getInterLinePlaneZ(private int pPlane, private float3 origin, private flo
  *	Obtiene la intersección de una recta (definida por origin y direction)
  *	y un plano perpendicular a Y (definido por pPlane)
  */
-float3 getInterLinePlaneY(private int pPlane,private float3 origin, private float3 direction){
+float3 getInterLinePlaneY(private float pPlane,private float3 origin, private float3 direction){
 	float3 inter;
-	inter.x = fma (pPlane - origin.y, direction.x/direction.y, origin.x);
-	inter.z = fma (pPlane - origin.y, direction.z/direction.y, origin.z);
+	inter.x = mad (pPlane - origin.y, direction.x/direction.y, origin.x);
+	inter.z = mad (pPlane - origin.y, direction.z/direction.y, origin.z);
 	inter.y = pPlane;
 	return inter;
 }
@@ -52,10 +54,10 @@ float3 getInterLinePlaneY(private int pPlane,private float3 origin, private floa
  *	Obtiene la intersección de una recta (definida por origin y direction)
  *	y un plano perpendicular a X (definido por pPlane)
  */
-float3 getInterLinePlaneX(private int pPlane, private float3 origin, private float3 direction){
+float3 getInterLinePlaneX(private float pPlane, private float3 origin, private float3 direction){
 	float3 inter;
-	inter.z = fma (pPlane - origin.x, direction.z/direction.x, origin.z);
-	inter.y = fma (pPlane - origin.x, direction.y/direction.x, origin.y);
+	inter.z = mad (pPlane - origin.x, direction.z/direction.x, origin.z);
+	inter.y = mad (pPlane - origin.x, direction.y/direction.x, origin.y);
 	inter.x = pPlane;
 	return inter;
 }
@@ -66,8 +68,13 @@ float3 getInterLinePlaneX(private int pPlane, private float3 origin, private flo
  */
 int insideVoxel(private float3 voxelPosition, private float3 point){
 	float3 delta = (float3) (VOXEL_SIZE_X, VOXEL_SIZE_Y, VOXEL_SIZE_Z);
-	float3 dist = voxelPosition - point;
-	return ((delta.x <= dist.x) && (delta.y <= dist.y) && (delta.z <= dist.z));
+	float3 dist = fabs(voxelPosition - point);
+	delta += (float3) (MIN_DIST, MIN_DIST, MIN_DIST);
+	if ((dist.x <= (delta.x / 2)) && (dist.y <= (delta.y / 2)) && (dist.z <= (delta.z / 2))){
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 /*
@@ -80,6 +87,7 @@ float getInterLineVoxel(private int index, private float3 origin, private float3
 	float3 voxelPosition = getVoxel(index);
 	float3 delta = (float3) (VOXEL_SIZE_X, VOXEL_SIZE_Y, VOXEL_SIZE_Z);
 	float3 intersec[6], aux[2];
+	float dist=0;
 	int valid[6], number_of_intersections = 0, i;
 	/*	se calculan las intersecciones del LOR con los planos del voxel	*/
 	if ( direction.x != 0 ){ /* si el LOR atravieza el plano ZY */
@@ -101,7 +109,7 @@ float getInterLineVoxel(private int index, private float3 origin, private float3
 		valid[2] = 0;
 		valid[3] = 0;
 	}
-	if ( direction.y != 0 ){ /*	si el LOR atravieza el plano XY	*/
+	if ( direction.z != 0 ){ /*	si el LOR atravieza el plano XY	*/
 		intersec[4] = getInterLinePlaneZ(voxelPosition.z + (delta.z / 2), origin, direction);
 		intersec[5] = getInterLinePlaneZ(voxelPosition.z - (delta.z / 2), origin, direction);
 		valid[4] = insideVoxel(voxelPosition, intersec[4]);
@@ -115,14 +123,15 @@ float getInterLineVoxel(private int index, private float3 origin, private float3
 	 * 	si no hay, se retorna cero.
 	 */
 	for (i=0; i<6; i++){
-		if(	valid[i] ){
+		if(	valid[i] == 1 ){
 			aux[ number_of_intersections ] = intersec[i];
 			number_of_intersections++;
-			if ( number_of_intersections == 2) {
-				if((aux[0].x == aux[1].x) && (aux[0].y == aux[1].y) && (aux[0].z == aux[1].z)){
+			if ( number_of_intersections == 2 ) {
+				dist = distance(aux[0],aux[1]);
+				if( dist < MIN_DIST ){
 					number_of_intersections = 1;
 				} else {
-					return distance (aux[0],aux[1]);
+					return dist;
 				}
 			}
 		}

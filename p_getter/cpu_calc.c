@@ -96,9 +96,11 @@ float get_inter_line_voxel (
 				result =  module ( difference );
 				free(inter[0]);
 				free(inter[1]);
+				inter[0] = inter[1] = NULL;
 			}
 		} else {
 			free(aux);
+			aux = NULL;
 		}
 	}
 	free(voxel);
@@ -113,6 +115,9 @@ float segment (vector *crystal0, vector *crystal1, vector *delta, vector *voxel_
 	direction = diff(crystal1, crystal0);
 	result = get_inter_line_voxel(voxel_index, voxel0, delta, crystal0, direction);
 	free(direction);
+	if (result < 0.25){
+		result = 0;
+	}
 	return result;
 }
 

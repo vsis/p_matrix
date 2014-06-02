@@ -10,8 +10,8 @@ int init_p(int max_lors, int num_of_voxels){
 	number_of_total_lors = max_lors;
 	number_of_voxels = num_of_voxels;
 	number_of_nonzero_elems = 0;
-	max_a2b = number_of_total_lors * 500;
-	a2r = (int *) calloc((2 * number_of_total_lors) + 1, sizeof(int));
+	max_a2b = number_of_total_lors * 92;
+	a2r = (int *) calloc(2 * number_of_total_lors, sizeof(int));
 	if (a2r == NULL){
 		error_msg("init_p(): calloc retornó NULL para a2r");
 		return P_WRITER_ERROR;
@@ -21,7 +21,7 @@ int init_p(int max_lors, int num_of_voxels){
 		error_msg("init_p(): calloc retornó NULL para a2b");
 		return P_WRITER_ERROR;
 	}
-	a2p = (float *) calloc(max_a2b, sizeof(int));
+	a2p = (float *) calloc(max_a2b, sizeof(float));
 	if(a2p == NULL){
 		error_msg("init_p(): calloc retornó NULL para a2p");
 		return P_WRITER_ERROR;
@@ -66,24 +66,32 @@ int add_lor(int lor_index, float * segments){
 //**********************************************************************
 int write_p_matrix(){
 	int written_elements, i, nonzero_elems, offset = 0;
-	written_elements = fwrite(a2r, sizeof(int), (number_of_total_lors * 2) + 1, P_FILE);
-	if (written_elements != (number_of_total_lors * 2) + 1){
+	char message[128];
+	written_elements = fwrite( (void *) a2r, sizeof(int), number_of_total_lors * 2, P_FILE);
+	if (written_elements != number_of_total_lors * 2){
 		error_msg("error al escribir el array a2r");
 		return P_WRITER_ERROR;
 	}
 	for (i = 0; i < number_of_total_lors; i++){
 		nonzero_elems = a2r[(i*2) + 1];	//el número de elementos no-cero para el lor i
-		written_elements = fwrite(&a2b[offset], sizeof(int), nonzero_elems, P_FILE);
-		if (written_elements != nonzero_elems){
-			error_msg("error al escribir el array a2b");
-			return P_WRITER_ERROR;
+		if (nonzero_elems != 0){
+			written_elements = fwrite( (void *) &(a2b[offset]), sizeof(int), nonzero_elems, P_FILE );
+			if (written_elements != nonzero_elems){
+				error_msg("error al escribir el array a2b");
+				return P_WRITER_ERROR;
+			}
+			written_elements = fwrite( (void *) &(a2p[offset]), sizeof(float), nonzero_elems, P_FILE );
+			if (written_elements != nonzero_elems){
+				error_msg("error al escribir el array a2p");
+				return P_WRITER_ERROR;
+			}
+			offset += nonzero_elems;
+			if (offset > number_of_nonzero_elems){
+				sprintf(message, "write_p_matrix(): offset = %i, number_of_nonzero_elems = %i, i = %i, nonzero_elems = %i", offset, number_of_nonzero_elems, i, nonzero_elems);
+				error_msg(message);
+				return P_WRITER_ERROR;
+			}
 		}
-		written_elements = fwrite(&a2p[offset], sizeof(float), nonzero_elems, P_FILE);
-		if (written_elements != nonzero_elems){
-			error_msg("error al escribir el array a2p");
-			return P_WRITER_ERROR;
-		}
-		offset += nonzero_elems;
 	}
 	return P_WRITER_SUCCESS;
 }
