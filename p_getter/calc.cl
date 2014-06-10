@@ -5,7 +5,7 @@
  */
 
 
-#define MIN_DIST 0.1	//distancia mínima para considerar dos puntos iguales
+#define MIN_DIST 0.05	//distancia mínima para considerar dos puntos iguales
 
 /*
  *	obtiene el centro del voxel a partir del índice
